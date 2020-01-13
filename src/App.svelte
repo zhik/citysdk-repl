@@ -8,18 +8,20 @@
 	} from './utils.js'
 
 	export let query = {}
-	$: value = JSON5.stringify(query, null, 2)
 	export let response = {}
+	$: value = JSON5.stringify(query, null, 2)
+	let loading = false;
 
 	async function runQuery(event) {
-		const query = event.detail;
-		//todo- wait for citysdk load
+		loading = true
+		query = event.detail;
 		response = await censusPromise(query).catch(error => error)
+		loading = false
 	}
 </script>
 
 <main>
-	<Input {value} on:message={runQuery} />
+	<Input {value} {loading} on:message={runQuery} />
 	<Output {response} />
 </main>
 

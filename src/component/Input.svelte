@@ -9,6 +9,7 @@
     const dispatch = createEventDispatcher();
 
     export let value = '';
+    export let loading = false;
     let query;
     let invalid;
 
@@ -45,6 +46,8 @@
     <div class="toggles">
         {#if invalid}
         <p class="error">{invalid}</p>
+        {:else if loading}
+        <p class="loading">loading...</p>
         {:else}
         <button on:click|preventDefault={()=> dispatch('message', query)}>Run Query</button>
         {/if}
@@ -62,6 +65,11 @@
 
     .toggles {
         padding: 0px 5px;
+    }
+
+    .loading{
+        color: rgb(61, 96, 136);
+        font-weight: 1000;
     }
 
     .error{
