@@ -1,30 +1,34 @@
 <script>
-	export let name;
+	import Input from './component/Input.svelte'
+	import Output from './component/Output.svelte'
+
+	import JSON5 from 'json5'
+	import {
+		censusPromise
+	} from './utils.js'
+
+	export let query = {}
+	$: value = JSON5.stringify(query, null, 2)
+	export let response = {}
+
+	async function runQuery(event) {
+		const query = event.detail;
+		//todo- wait for citysdk load
+		response = await censusPromise(query).catch(error => error)
+	}
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<Input {value} on:message={runQuery} />
+	<Output {response} />
 </main>
 
 <style>
 	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
+		display: flex;
+		flex-wrap: wrap;
+		box-shadow: 2px 3px;
+		border: 1px solid;
+		position: relative;
 	}
 </style>

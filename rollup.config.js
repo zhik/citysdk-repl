@@ -2,15 +2,19 @@ import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
-import { terser } from 'rollup-plugin-terser';
+import json from '@rollup/plugin-json';
+import babel from 'rollup-plugin-babel';
+import {
+	terser
+} from 'rollup-plugin-terser';
 
 const production = !process.env.ROLLUP_WATCH;
 
 export default {
 	input: 'src/main.js',
 	output: {
-		sourcemap: true,
-		format: 'iife',
+		sourcemap: false,
+		format: 'umd',
 		name: 'app',
 		file: 'public/build/bundle.js'
 	},
@@ -24,7 +28,6 @@ export default {
 				css.write('public/build/bundle.css');
 			}
 		}),
-
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In
 		// some cases you'll need additional configuration —
@@ -35,7 +38,7 @@ export default {
 			dedupe: importee => importee === 'svelte' || importee.startsWith('svelte/')
 		}),
 		commonjs(),
-
+		json(),
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
 		!production && serve(),
@@ -46,7 +49,7 @@ export default {
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
-		production && terser()
+		production && babel() && terser()
 	],
 	watch: {
 		clearScreen: false
